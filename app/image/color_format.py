@@ -44,18 +44,21 @@ class ColorFormat():
 
     @property
     def bits_per_components(self):
-        return self._bpc
+        return self._bpcs
 
     @bits_per_components.setter
     def bits_per_components(self, bpcs):
-        try:
-            v1, v2, v3, v4 = bpcs
-        except ValueError:
-            raise ValueError(
-                "Pass an iterable with four color components (default 0 for forth component)!"
-            )
-        else:
-            self._bpcs = bpcs
+
+        if isinstance(bpcs, (list, tuple)):
+            if len(bpcs) == 3:
+                self._bpcs = (tuple(bpcs) + (0, ))
+                return
+            elif len(bpcs) == 4:
+                self._bpcs = tuple(bpcs)
+                return
+
+        raise ValueError(
+            "Provided value should be an iterable of 3 or 4 values!")
 
     def __str__(self):
         return name
