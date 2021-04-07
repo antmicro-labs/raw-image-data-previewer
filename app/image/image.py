@@ -43,10 +43,10 @@ class Image(RawDataContainer):
     def width(self):
         if (self.processed_data is None):
             return None
-        return self.processed_data.shape[0]
+        return self.processed_data.shape[1]
 
     @property
     def height(self):
         if (self.processed_data is None):
             return None
-        return self.processed_data.shape[1]
+        return self.processed_data.shape[0]
