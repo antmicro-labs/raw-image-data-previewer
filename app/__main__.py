@@ -21,14 +21,6 @@ parser.add_argument("-r",
                     nargs=2,
                     default=[600, 600],
                     help="target resolution (default: %(default)s)")
-parser.add_argument("-p",
-                    "--parse",
-                    action='store_true',
-                    help="parse raw image data")
-parser.add_argument("-d",
-                    "--display",
-                    action='store_true',
-                    help="display image")
 
 args = vars(parser.parse_args())
 
