@@ -4,29 +4,7 @@ from abc import ABCMeta, abstractmethod
 from ..image.image import Image
 from ..image.color_format import (ColorFormat, PixelFormat, Endianness)
 import numpy
-
-
-def _calc_lcm(x, y):
-    """Calculate least common multiply.
-
-    Keyword arguments:
-        x: first integer
-        y: second integer
-
-    Returns: Least common multiply of both integers.
-    """
-    if x > y:
-        bigger = x
-    else:
-        bigger = y
-
-    while True:
-        if (bigger % x == 0) and (bigger % y == 0):
-            lcm = bigger
-            break
-        bigger += 1
-
-    return lcm
+import math
 
 
 class AbstractParser(metaclass=ABCMeta):
@@ -65,7 +43,7 @@ class AbstractParser(metaclass=ABCMeta):
 
         comp_bits = color_format.bits_per_components
         draft_data = bytearray(raw_data)
-        step = int(_calc_lcm(sum(comp_bits), 8) / 8)
+        step = int(math.lcm(sum(comp_bits), 8) / 8)
 
         if len(draft_data) % step != 0:
             draft_data += (0).to_bytes(len(raw_data) % step,
