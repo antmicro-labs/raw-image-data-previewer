@@ -12,7 +12,7 @@ class TestImageClass(unittest.TestCase):
         self.empty_img = image.Image(None)
         with open(self.TEST_FILE_BGR, "rb") as file:
             self.img = image.Image(file.read(), cf.BGR3_FORMAT,
-                                   numpy.zeros((1280, 720, 3)))
+                                   numpy.zeros((720, 1280, 3)))
 
     def test_from_file(self):
         self.assertEqual(
