@@ -10,7 +10,7 @@ class TestColorFormat(unittest.TestCase):
                                            8,
                                            8,
                                            8,
-                                           name="RGB3")
+                                           name="RGB24")
 
     def test_bpcs_setter(self):
         self.color_format.bits_per_components = (8, 8, 8, 0)

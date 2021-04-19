@@ -65,20 +65,45 @@ class ColorFormat():
 
 
 AVAILABLE_FORMATS = {
-    'RGB3':
+    'RGB24':
     ColorFormat(PixelFormat.RGBA,
                 Endianness.BIG_ENDIAN,
                 PixelPlane.PACKED,
                 8,
                 8,
                 8,
-                name="RGB3"),
-    'BGR3':
+                name="RGB24"),
+    'BGR24':
     ColorFormat(PixelFormat.BGRA,
                 Endianness.BIG_ENDIAN,
                 PixelPlane.PACKED,
                 8,
                 8,
                 8,
-                name="BGR3")
+                name="BGR24"),
+    'RGB32':
+    ColorFormat(PixelFormat.RGBA,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                8,
+                name="RGB32"),
+    'RGB332':
+    ColorFormat(PixelFormat.RGBA,
+                Endianness.LITTLE_ENDIAN,
+                PixelPlane.PACKED,
+                3,
+                3,
+                2,
+                name="RGB332"),
+    'RGB565':
+    ColorFormat(PixelFormat.RGBA,
+                Endianness.LITTLE_ENDIAN,
+                PixelPlane.PACKED,
+                5,
+                6,
+                5,
+                name="RGB565")
 }

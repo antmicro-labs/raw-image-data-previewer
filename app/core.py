@@ -6,9 +6,12 @@ from .parser.factory import ParserFactory
 
 
 def load_image(file_path, color_format, resolution):
-
-    image = Image.from_file(file_path)
-    parser = ParserFactory.create_object(determine_color_format(color_format))
+    try:
+        image = Image.from_file(file_path)
+        parser = ParserFactory.create_object(
+            determine_color_format(color_format))
+    except Exception as e:
+        print(type(e).__name__, e)
 
     image = parser.parse(image.data_buffer,
                          determine_color_format(color_format), resolution[0],
@@ -20,7 +23,7 @@ def load_image(file_path, color_format, resolution):
 def get_displayable(image):
 
     if image.color_format is None:
-        raise Exception()
+        raise Exception("Image should be already parsed!")
     parser = ParserFactory.create_object(image.color_format)
 
     return parser.get_displayable(image)
@@ -31,4 +34,5 @@ def determine_color_format(format_string):
     if format_string in AVAILABLE_FORMATS.keys():
         return AVAILABLE_FORMATS[format_string]
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(
+            "Provided string is not name of supported format.")

@@ -11,7 +11,7 @@ class TestImageClass(unittest.TestCase):
                                           "resources/BGR3_1280_720")
         self.empty_img = image.Image(None)
         with open(self.TEST_FILE_BGR, "rb") as file:
-            self.img = image.Image(file.read(), cf.AVAILABLE_FORMATS['BGR3'],
+            self.img = image.Image(file.read(), cf.AVAILABLE_FORMATS['BGR24'],
                                    numpy.zeros((720, 1280, 3)))
 
     def test_from_file(self):

@@ -29,7 +29,7 @@ args = vars(parser.parse_args())
 if not os.path.isfile(args["FILE_PATH"]):
     raise Exception("Given path does not lead to a file")
 
-img = load_image(args["FILE_PATH"], args["color_format"], args['resolution'])
-cv.imshow("Displayed photo", get_displayable(img))
+img = load_image(args["FILE_PATH"], args["color_format"], args["resolution"])
+cv.imshow(args["FILE_PATH"], get_displayable(img))
 cv.waitKey(0)
 cv.destroyAllWindows()
