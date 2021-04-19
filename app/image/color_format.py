@@ -61,20 +61,24 @@ class ColorFormat():
             "Provided value should be an iterable of 3 or 4 values!")
 
     def __str__(self):
-        return name
+        return self.name
 
 
-RGB3_FORMAT = ColorFormat(PixelFormat.RGBA,
-                          Endianness.BIG_ENDIAN,
-                          PixelPlane.PACKED,
-                          8,
-                          8,
-                          8,
-                          name="RGB3")
-BGR3_FORMAT = ColorFormat(PixelFormat.BGRA,
-                          Endianness.BIG_ENDIAN,
-                          PixelPlane.PACKED,
-                          8,
-                          8,
-                          8,
-                          name="BGR3")
+AVAILABLE_FORMATS = {
+    'RGB3':
+    ColorFormat(PixelFormat.RGBA,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                name="RGB3"),
+    'BGR3':
+    ColorFormat(PixelFormat.BGRA,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                name="BGR3")
+}

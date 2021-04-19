@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+import cv2 as cv
 """Raw image data previewer - terminal functionality."""
 
 import argparse
 import os
-from .core import run_core_functionality
+from .core import (load_image, get_displayable)
+from .image.color_format import AVAILABLE_FORMATS
 
 parser = argparse.ArgumentParser(
     prog=__package__,
@@ -11,8 +13,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument("FILE_PATH", help="file containing raw image data")
 parser.add_argument("-c",
                     "--color_format",
-                    choices=["RGB3", "BGR3"],
-                    default="RGB3",
+                    choices=AVAILABLE_FORMATS.keys(),
+                    default=list(AVAILABLE_FORMATS.keys())[0],
                     help="target color format (default: %(default)s)")
 parser.add_argument("-r",
                     "--resolution",
@@ -27,4 +29,7 @@ args = vars(parser.parse_args())
 if not os.path.isfile(args["FILE_PATH"]):
     raise Exception("Given path does not lead to a file")
 
-run_core_functionality(args)
+img = load_image(args["FILE_PATH"], args["color_format"], args['resolution'])
+cv.imshow("Displayed photo", get_displayable(img))
+cv.waitKey(0)
+cv.destroyAllWindows()
