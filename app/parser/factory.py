@@ -22,7 +22,7 @@ class ParserFactory:
                 PixelFormat.RGBA: ParserRGBA,
                 PixelFormat.BGRA: ParserRGBA,
                 PixelFormat.YUYV: ParserYUV422,
-                PixelFormat.UYVY: ParserYUV420,
+                PixelFormat.UYVY: ParserYUV422,
             }
         elif color_format.pixel_plane == PixelPlane.SEMIPLANAR:
             mapping = {
@@ -31,4 +31,8 @@ class ParserFactory:
             }
 
         proper_class = mapping.get(color_format.pixel_format)
+        if proper_class is None:
+            raise NotImplementedError(
+                "No parser found for {} color format".format(
+                    color_format.name))
         return proper_class()
