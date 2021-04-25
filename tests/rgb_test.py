@@ -20,7 +20,7 @@ class DummyPixelPlane(Enum):
     PACKED = 1
 
 
-class TestParserClass(unittest.TestCase):
+class TestRGBParserClass(unittest.TestCase):
     def setUp(self):
 
         self.RGB565_FORMAT = Mock(pixel_format=DummyPixelFormat.RGBA,

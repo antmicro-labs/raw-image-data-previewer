@@ -23,7 +23,7 @@ class DummyPixelPlane(Enum):
     SEMIPLANAR = 2
 
 
-class TestParserClass(unittest.TestCase):
+class TestYUVParserClass(unittest.TestCase):
     def setUp(self):
 
         #YUV420 Parser
