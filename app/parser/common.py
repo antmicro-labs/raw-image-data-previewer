@@ -10,8 +10,12 @@ import math
 class AbstractParser(metaclass=ABCMeta):
     """An abstract data parser"""
     @abstractmethod
-    def get_displayable(self):
+    def get_displayable(self, image):
         """Provides displayable image data (BGR formatted)
+        
+        Keyword arguments:
+
+            image: processed image object
 
         Returns: Numpy array containing displayable data.
         """
@@ -28,6 +32,7 @@ class AbstractParser(metaclass=ABCMeta):
             height: target height to interpret
 
         Returns: instance of Image processed to chosen format
+        Throws: ValueError if can't construct image of provided width and height from raw_data
         """
 
         max_value = max(color_format.bits_per_components)
@@ -41,6 +46,54 @@ class AbstractParser(metaclass=ABCMeta):
         else:
             curr_dtype = numpy.int64
 
+        data_array = []
+        temp_set = set(color_format.bits_per_components)
+
+        try:
+            if (len(temp_set) == 1 or len(temp_set) == 2
+                    and not temp_set.add(0)) and max_value % 8 == 0:
+                temp = None
+                if len(temp_set) == 1:
+                    temp = numpy.frombuffer(raw_data,
+                                            dtype=curr_dtype,
+                                            count=(height * width * 4))
+                else:
+                    temp = numpy.concatenate(
+                        (numpy.reshape(
+                            numpy.frombuffer(raw_data,
+                                             dtype=curr_dtype,
+                                             count=(height * width * 3)),
+                            (height, width, 3)),
+                         numpy.full(
+                             (height, width, 1), 255.0, dtype=curr_dtype)),
+                        axis=2)
+                data_array = numpy.reshape(temp, width * height * 4)
+            else:
+                data_array = self._parse_not_bytefilled(
+                    raw_data, color_format, width, height)
+        except ValueError:
+            raise ValueError(
+                "Not enough values in buffer to construct image of resolution {} x {}"
+                .format(width, height))
+
+        processed_data = numpy.array(data_array, dtype=curr_dtype)
+
+        return Image(raw_data, color_format, processed_data, width, height)
+
+    def _parse_not_bytefilled(self, raw_data, color_format, width, height):
+        """Parses provided raw data to an image - bits per component are not multiple of 8.
+
+        Keyword arguments:
+
+            raw_data: bytes object
+            color_format: target instance of ColorFormat
+            width: target width to interpret
+            height: target height to interpret
+
+        Returns: instance of Image processed to chosen format
+        Throws: ValueError if can't construct image of provided width and height from raw_data
+        """
+
         comp_bits = color_format.bits_per_components
         draft_data = bytearray(raw_data)
         step = int(math.lcm(sum(comp_bits), 8) / 8)
@@ -51,7 +104,11 @@ class AbstractParser(metaclass=ABCMeta):
 
         position = 0
         data_array = []
-        while position < len(draft_data):
+        while len(data_array) != (width * height * 4):
+
+            if position >= len(draft_data):
+                raise ValueError()
+
             current_bytes = draft_data[position:position + step]
             temp_number = int.from_bytes(
                 current_bytes, "little" if color_format.endianness
@@ -68,17 +125,4 @@ class AbstractParser(metaclass=ABCMeta):
                 data_array += pixel_arr[::-1]
             position += step
 
-        if len(data_array) < (width * height * 4):
-            temp_arr = numpy.zeros(width * height * 4)
-            temp_arr[0:len(data_array)] = data_array
-            data_array = temp_arr
-            processed_data = numpy.reshape(data_array, (height, width, 4))
-        else:
-            processed_data = numpy.reshape(
-                numpy.array(data_array)[:width * height * 4],
-                (height, width, 4))
-
-        if comp_bits[3] == 0:
-            processed_data[:, :, 3] = 255
-
-        return Image(raw_data, color_format, processed_data)
+        return data_array
