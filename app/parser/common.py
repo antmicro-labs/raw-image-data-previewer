@@ -38,13 +38,13 @@ class AbstractParser(metaclass=ABCMeta):
         max_value = max(color_format.bits_per_components)
         curr_dtype = None
         if max_value <= 8:
-            curr_dtype = numpy.int8
+            curr_dtype = numpy.uint8
         elif max_value <= 16:
-            curr_dtype = numpy.int16
+            curr_dtype = numpy.uint16
         elif max_value <= 32:
-            curr_dtype = numpy.int32
+            curr_dtype = numpy.uint32
         else:
-            curr_dtype = numpy.int64
+            curr_dtype = numpy.uint64
 
         data_array = []
         temp_set = set(color_format.bits_per_components)
