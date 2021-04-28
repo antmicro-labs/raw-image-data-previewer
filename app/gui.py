@@ -16,13 +16,27 @@ class MainWindow(tk.Frame):
         self.frm_image = tk.Label(self.master, bg=self.bg_color)
         self.frm_image.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
         self.pack()
+        self.init_width = args["resolution"][0]
+        self.init_height = args["resolution"][1]
+        self.path_to_File = args["FILE_PATH"]
+        self.init_color_format = args["color_format"]
         self.widget_font = tkFont.Font(family='Gill Sans MT',
                                        size=10,
                                        weight=tkFont.NORMAL)
         self.img_tk = None
+        self.create_image()
         self.create_widgets(args)
-        self.path_to_File = args["FILE_PATH"]
-        self.update_image()
+
+    def create_image(self):
+        resolution = [self.init_width, self.init_height]
+        img = load_image(self.path_to_File, self.init_color_format, resolution)
+        self.img_tk = Image.fromarray(get_displayable(img))
+        img_tk = ImageTk.PhotoImage(image=self.img_tk)
+        self.frm_image.img_tk = img_tk
+        self.frm_image.config(image=img_tk)
+        resolution_string = str(resolution[0] +
+                                200) + "x" + str(resolution[1] + 20)
+        self.master.geometry(resolution_string)
 
     def open_file(self):
         self.path_to_File = askopenfilename(filetypes=[("All Files", "*")])
@@ -113,11 +127,11 @@ class MainWindow(tk.Frame):
         self.ent_width = tk.Entry(master=frm_width,
                                   width=10,
                                   font=self.widget_font)
-        self.ent_width.insert(0, args["resolution"][0])
+        self.ent_width.insert(0, self.img_tk.width)
         self.ent_height = tk.Entry(master=frm_height,
                                    width=10,
                                    font=self.widget_font)
-        self.ent_height.insert(0, args["resolution"][1])
+        self.ent_height.insert(0, self.img_tk.height)
         self.ent_height.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
         self.ent_width.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
         frm_size.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
