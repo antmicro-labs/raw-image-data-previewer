@@ -1,8 +1,8 @@
 """Factory returning proper parser"""
 
-from ..image.color_format import (PixelFormat, ColorFormat)
-from .bgra import ParserBGRA
-from .rgba import ParserRGBA
+from ..image.color_format import (PixelPlane, PixelFormat, ColorFormat)
+from .rgb import ParserRGBA
+from .yuv import (ParserYUV420, ParserYUV422)
 
 
 class ParserFactory:
@@ -16,8 +16,23 @@ class ParserFactory:
 
         Returns: instance of parser
         """
-
-        mapping = {PixelFormat.RGBA: ParserRGBA, PixelFormat.BGRA: ParserBGRA}
+        mapping = {}
+        if color_format.pixel_plane == PixelPlane.PACKED:
+            mapping = {
+                PixelFormat.RGBA: ParserRGBA,
+                PixelFormat.BGRA: ParserRGBA,
+                PixelFormat.YUYV: ParserYUV422,
+                PixelFormat.UYVY: ParserYUV422,
+            }
+        elif color_format.pixel_plane == PixelPlane.SEMIPLANAR:
+            mapping = {
+                PixelFormat.YUV: ParserYUV420,
+                PixelFormat.YVU: ParserYUV420,
+            }
 
         proper_class = mapping.get(color_format.pixel_format)
+        if proper_class is None:
+            raise NotImplementedError(
+                "No parser found for {} color format".format(
+                    color_format.name))
         return proper_class()
