@@ -93,10 +93,10 @@ class TestYUVParserClass(unittest.TestCase):
         displayable = self.parserY420.get_displayable(self.Y420_IMAGE)
         self.assertEqual(displayable.shape,
                          (self.Y420_IMAGE.height, self.Y420_IMAGE.width, 3))
-        self.assertTrue((displayable == numpy.array([[[255, 255, 74],
-                                                      [255, 255, 74]],
-                                                     [[255, 54, 0],
-                                                      [255, 54, 0]]])).all())
+        self.assertTrue((displayable == numpy.array([[[74, 255, 255],
+                                                      [74, 255, 255]],
+                                                     [[0, 54, 255],
+                                                      [0, 54, 255]]])).all())
 
     @patch("app.parser.yuv.PixelFormat", DummyPixelFormat)
     @patch("app.parser.yuv.Endianness", DummyEndianness)
@@ -106,10 +106,10 @@ class TestYUVParserClass(unittest.TestCase):
         displayable = self.parserY422.get_displayable(self.Y422_IMAGE)
         self.assertEqual(displayable.shape,
                          (self.Y422_IMAGE.height, self.Y422_IMAGE.width, 3))
-        self.assertTrue((displayable == numpy.array([[[255, 255, 74],
-                                                      [255, 255, 74]],
-                                                     [[0, 0, 203],
-                                                      [0, 0, 203]]])).all())
+        self.assertTrue((displayable == numpy.array([[[74, 255, 255],
+                                                      [74, 255, 255]],
+                                                     [[203, 0, 0],
+                                                      [203, 0, 0]]])).all())
 
 
 if __name__ == "__main__":

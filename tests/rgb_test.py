@@ -89,15 +89,15 @@ class TestRGBParserClass(unittest.TestCase):
             displayable.shape,
             (self.RGB565_IMAGE.height, self.RGB565_IMAGE.width, 4))
 
-        self.assertTrue((displayable == numpy.array([[[0, 0, 0, 0],
+        self.assertTrue((displayable == numpy.array([[[0, 0, 0, 255],
                                                       [255, 255, 255,
-                                                       0]]])).all())
+                                                       255]]])).all())
 
         displayable = self.parser.get_displayable(self.BGR32_IMAGE)
         self.assertEqual(displayable.shape,
                          (self.BGR32_IMAGE.height, self.BGR32_IMAGE.width, 4))
 
-        self.assertTrue((displayable == numpy.array([[[0, 0, 255,
+        self.assertTrue((displayable == numpy.array([[[255, 0, 0,
                                                        255]]])).all())
 
 

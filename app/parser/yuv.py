@@ -51,7 +51,7 @@ class ParserYUV420(AbstractParser):
         return Image(raw_data, color_format, processed_data, width, new_height)
 
     def get_displayable(self, image):
-        """Provides displayable image data (BGR formatted)
+        """Provides displayable image data (RGB formatted)
 
         Returns: Numpy array containing displayable data.
         """
@@ -59,9 +59,9 @@ class ParserYUV420(AbstractParser):
 
         conversion_const = None
         if image.color_format.pixel_format == PixelFormat.YUV:
-            conversion_const = cv.COLOR_YUV2BGR_NV12
+            conversion_const = cv.COLOR_YUV2RGB_NV12
         elif image.color_format.pixel_format == PixelFormat.YVU:
-            conversion_const = cv.COLOR_YUV2BGR_NV21
+            conversion_const = cv.COLOR_YUV2RGB_NV21
 
         data_array = numpy.reshape(
             return_data,
@@ -121,7 +121,7 @@ class ParserYUV422(AbstractParser):
                      processed_data.size // (width * 2))
 
     def get_displayable(self, image):
-        """Provides displayable image data (BGR formatted)
+        """Provides displayable image data (RGB formatted)
 
         Returns: Numpy array containing displayable data.
         """
@@ -129,9 +129,9 @@ class ParserYUV422(AbstractParser):
 
         conversion_const = None
         if image.color_format.pixel_format == PixelFormat.YUYV:
-            conversion_const = cv.COLOR_YUV2BGR_YUYV
+            conversion_const = cv.COLOR_YUV2RGB_YUYV
         elif image.color_format.pixel_format == PixelFormat.UYVY:
-            conversion_const = cv.COLOR_YUV2BGR_UYVY
+            conversion_const = cv.COLOR_YUV2RGB_UYVY
 
         return_data = cv.cvtColor(
             numpy.reshape(return_data,
