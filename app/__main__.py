@@ -6,6 +6,7 @@ import argparse
 import os
 from .core import (load_image, get_displayable)
 from .image.color_format import AVAILABLE_FORMATS
+from .gui import MainWindow
 
 parser = argparse.ArgumentParser(
     prog=__package__,
@@ -29,7 +30,11 @@ args = vars(parser.parse_args())
 if not os.path.isfile(args["FILE_PATH"]):
     raise Exception("Given path does not lead to a file")
 
-img = load_image(args["FILE_PATH"], args["color_format"], args["resolution"])
+#img = load_image(args["FILE_PATH"], args["color_format"], args["resolution"])
+app = MainWindow(args)
+app.mainloop()
+"""
 cv.imshow(args["FILE_PATH"], get_displayable(img))
 cv.waitKey(0)
 cv.destroyAllWindows()
+"""
