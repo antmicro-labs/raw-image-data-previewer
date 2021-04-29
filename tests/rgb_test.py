@@ -56,7 +56,7 @@ class TestRGBParserClass(unittest.TestCase):
     @patch("app.parser.rgb.PixelPlane", DummyPixelPlane)
     def test_parse(self):
 
-        parsed_img = self.parser.parse(self.raw_data, self.RGB565_FORMAT, 2, 1)
+        parsed_img = self.parser.parse(self.raw_data, self.RGB565_FORMAT, 2)
 
         self.assertEqual(parsed_img.data_buffer, self.RGB565_IMAGE.data_buffer)
         self.assertEqual(parsed_img.width, self.RGB565_IMAGE.width)
@@ -67,7 +67,7 @@ class TestRGBParserClass(unittest.TestCase):
             (parsed_img.processed_data == self.RGB565_IMAGE.processed_data
              ).all())
 
-        parsed_img = self.parser.parse(self.raw_data, self.BGR32_FORMAT, 1, 1)
+        parsed_img = self.parser.parse(self.raw_data, self.BGR32_FORMAT, 1)
 
         self.assertEqual(parsed_img.data_buffer, self.BGR32_IMAGE.data_buffer)
         self.assertEqual(parsed_img.width, self.BGR32_IMAGE.width)
@@ -78,9 +78,6 @@ class TestRGBParserClass(unittest.TestCase):
         self.assertTrue(
             (parsed_img.processed_data == self.BGR32_IMAGE.processed_data
              ).all())
-
-        with self.assertRaises(ValueError):
-            self.parser.parse(self.raw_data, self.RGB565_FORMAT, 2, 2)
 
     @patch("app.parser.rgb.PixelFormat", DummyPixelFormat)
     @patch("app.parser.rgb.Endianness", DummyEndianness)

@@ -62,7 +62,7 @@ class TestYUVParserClass(unittest.TestCase):
     def test_parse_Y420(self):
 
         parsed_img = self.parserY420.parse(self.raw_data_Y420,
-                                           self.Y420_FORMAT, 2, 2)
+                                           self.Y420_FORMAT, 2)
 
         self.assertEqual(parsed_img.data_buffer, self.Y420_IMAGE.data_buffer)
         self.assertEqual(parsed_img.width, self.Y420_IMAGE.width)
@@ -71,18 +71,12 @@ class TestYUVParserClass(unittest.TestCase):
         self.assertTrue((
             parsed_img.processed_data == self.Y420_IMAGE.processed_data).all())
 
-        parsed_img = self.parserY420.parse(self.raw_data_Y420,
-                                           self.Y420_FORMAT, 2, 2)
-
-        with self.assertRaises(ValueError):
-            self.parserY420.parse(self.raw_data_Y420, self.Y420_FORMAT, 4, 4)
-
     @patch("app.parser.yuv.PixelFormat", DummyPixelFormat)
     @patch("app.parser.yuv.Endianness", DummyEndianness)
     @patch("app.parser.yuv.PixelPlane", DummyPixelPlane)
     def test_parse_Y422(self):
         parsed_img = self.parserY422.parse(self.raw_data_Y422,
-                                           self.Y422_FORMAT, 2, 2)
+                                           self.Y422_FORMAT, 2)
 
         self.assertEqual(parsed_img.data_buffer, self.Y422_IMAGE.data_buffer)
         self.assertEqual(parsed_img.width, self.Y422_IMAGE.width)
@@ -90,9 +84,6 @@ class TestYUVParserClass(unittest.TestCase):
         self.assertEqual(parsed_img.color_format, self.Y422_IMAGE.color_format)
         self.assertTrue((
             parsed_img.processed_data == self.Y422_IMAGE.processed_data).all())
-
-        with self.assertRaises(ValueError):
-            self.parserY422.parse(self.raw_data_Y422, self.Y422_FORMAT, 4, 4)
 
     @patch("app.parser.yuv.PixelFormat", DummyPixelFormat)
     @patch("app.parser.yuv.Endianness", DummyEndianness)

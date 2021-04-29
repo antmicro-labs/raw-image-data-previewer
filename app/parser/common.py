@@ -21,18 +21,17 @@ class AbstractParser(metaclass=ABCMeta):
         """
         pass
 
-    def parse(self, raw_data, color_format, width, height):
-        """Parses provided raw data to an image.
+    def parse(self, raw_data, color_format, width, height=None):
+        """Parses provided raw data to an image, calculating height from provided width.
 
         Keyword arguments:
 
             raw_data: bytes object
             color_format: target instance of ColorFormat
             width: target width to interpret
-            height: target height to interpret
+            height: (deprecated) target height to interpret, default: None
 
         Returns: instance of Image processed to chosen format
-        Throws: ValueError if can't construct image of provided width and height from raw_data
         """
 
         max_value = max(color_format.bits_per_components)
@@ -49,38 +48,37 @@ class AbstractParser(metaclass=ABCMeta):
         data_array = []
         temp_set = set(color_format.bits_per_components)
 
-        try:
-            if (len(temp_set) == 1 or len(temp_set) == 2
-                    and not temp_set.add(0)) and max_value % 8 == 0:
-                temp = None
-                if len(temp_set) == 1:
-                    temp = numpy.frombuffer(raw_data,
-                                            dtype=curr_dtype,
-                                            count=(height * width * 4))
-                else:
+        if (len(temp_set) == 1 or len(temp_set) == 2
+                and not temp_set.add(0)) and max_value % 8 == 0:
+            temp = numpy.frombuffer(raw_data, dtype=curr_dtype)
+            data_array = temp
+            if len(temp_set) == 2:
+                if (temp.size % (width * 3) != 0):
                     temp = numpy.concatenate(
-                        (numpy.reshape(
-                            numpy.frombuffer(raw_data,
-                                             dtype=curr_dtype,
-                                             count=(height * width * 3)),
-                            (height, width, 3)),
-                         numpy.full(
-                             (height, width, 1), 255.0, dtype=curr_dtype)),
-                        axis=2)
-                data_array = numpy.reshape(temp, width * height * 4)
-            else:
-                data_array = self._parse_not_bytefilled(
-                    raw_data, color_format, width, height)
-        except ValueError:
-            raise ValueError(
-                "Not enough values in buffer to construct image of resolution {} x {}"
-                .format(width, height))
+                        (temp,
+                         numpy.zeros((width * 3) - (temp.size % (width * 3)))))
+                temp = numpy.concatenate(
+                    (numpy.reshape(temp,
+                                   (int(temp.size / (width * 3)), width, 3)),
+                     numpy.full((int(temp.size / (width * 3)), width, 1),
+                                255,
+                                dtype=curr_dtype)),
+                    axis=2)
+                data_array = numpy.reshape(temp, temp.size)
+        else:
+            data_array = self._parse_not_bytefilled(raw_data, color_format)
 
         processed_data = numpy.array(data_array, dtype=curr_dtype)
+        if (processed_data.size % (width * 4) != 0):
+            processed_data = numpy.concatenate(
+                (processed_data,
+                 numpy.zeros((width * 4) - (processed_data.size %
+                                            (width * 4)))))
+        print('costam {}'.format(processed_data.size / (width * 4)))
+        return Image(raw_data, color_format, processed_data, width,
+                     processed_data.size // (width * 4))
 
-        return Image(raw_data, color_format, processed_data, width, height)
-
-    def _parse_not_bytefilled(self, raw_data, color_format, width, height):
+    def _parse_not_bytefilled(self, raw_data, color_format):
         """Parses provided raw data to an image - bits per component are not multiple of 8.
 
         Keyword arguments:
@@ -91,23 +89,17 @@ class AbstractParser(metaclass=ABCMeta):
             height: target height to interpret
 
         Returns: instance of Image processed to chosen format
-        Throws: ValueError if can't construct image of provided width and height from raw_data
         """
 
         comp_bits = color_format.bits_per_components
         draft_data = bytearray(raw_data)
         step = int(math.lcm(sum(comp_bits), 8) / 8)
-
         if len(draft_data) % step != 0:
             draft_data += (0).to_bytes(len(raw_data) % step,
                                        byteorder="little")
-
         position = 0
         data_array = []
-        while len(data_array) != (width * height * 4):
-
-            if position >= len(draft_data):
-                raise ValueError()
+        while position + step <= len(draft_data):
 
             current_bytes = draft_data[position:position + step]
             temp_number = int.from_bytes(
