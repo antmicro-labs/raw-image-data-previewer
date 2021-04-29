@@ -26,27 +26,24 @@ class RawDataContainer:
 
 class Image(RawDataContainer):
     """Container for image data."""
-    def __init__(self, data_buffer, color_format=None, processed_data=None):
+    def __init__(self,
+                 data_buffer,
+                 color_format=None,
+                 processed_data=None,
+                 width=None,
+                 height=None):
         """Constructs Image instance.
 
         Keyword arguments:
 
             data_buffer: bytes object
             color_format: instance of ColorFormat
-            processed_data: numpy array 
+            processed_data: numpy array
+            width: image width
+            height: image height
         """
         RawDataContainer.__init__(self, data_buffer=data_buffer)
         self.color_format = color_format
         self.processed_data = processed_data
-
-    @property
-    def width(self):
-        if (self.processed_data is None):
-            return None
-        return self.processed_data.shape[1]
-
-    @property
-    def height(self):
-        if (self.processed_data is None):
-            return None
-        return self.processed_data.shape[0]
+        self.width = width
+        self.height = height

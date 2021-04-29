@@ -8,6 +8,10 @@ class PixelFormat(Enum):
 
     RGBA = 1
     BGRA = 2
+    YUYV = 3
+    UYVY = 4
+    YUV = 5
+    YVU = 6
     CUSTOM = 0
 
 
@@ -23,6 +27,7 @@ class PixelPlane(Enum):
 
     PACKED = 1
     PLANAR = 2
+    SEMIPLANAR = 3
 
 
 class ColorFormat():
@@ -105,5 +110,39 @@ AVAILABLE_FORMATS = {
                 5,
                 6,
                 5,
-                name="RGB565")
+                name="RGB565"),
+    'YUY2':
+    ColorFormat(PixelFormat.YUYV,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                bpc4=8,
+                name="YUY2"),
+    'UYVY':
+    ColorFormat(PixelFormat.UYVY,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                bpc4=8,
+                name="UYVY"),
+    'NV12':
+    ColorFormat(PixelFormat.YUV,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.SEMIPLANAR,
+                8,
+                8,
+                8,
+                name="NV12"),
+    'NV21':
+    ColorFormat(PixelFormat.YVU,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.SEMIPLANAR,
+                8,
+                8,
+                8,
+                name="NV21"),
 }
