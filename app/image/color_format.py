@@ -13,6 +13,7 @@ class PixelFormat(Enum):
     YUV = 5
     YVU = 6
     MONO = 7
+    BAYER_RG = 8
     CUSTOM = 0
 
 
@@ -161,7 +162,7 @@ AVAILABLE_FORMATS = {
                 10,
                 0,
                 0,
-                name="GREY"),
+                name="GREY10"),
     'GREY12':
     ColorFormat(PixelFormat.MONO,
                 Endianness.BIG_ENDIAN,
@@ -169,5 +170,37 @@ AVAILABLE_FORMATS = {
                 12,
                 0,
                 0,
-                name="GREY12")
+                name="GREY12"),
+    'RGGB':
+    ColorFormat(PixelFormat.BAYER_RG,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                name="RGGB"),
+    'RG10':
+    ColorFormat(PixelFormat.BAYER_RG,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                10,
+                10,
+                10,
+                name="RG10"),
+    'RG12':
+    ColorFormat(PixelFormat.BAYER_RG,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                12,
+                12,
+                12,
+                name="RG12"),
+    'RG16':
+    ColorFormat(PixelFormat.BAYER_RG,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                16,
+                16,
+                16,
+                name="RG16")
 }
