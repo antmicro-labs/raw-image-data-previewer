@@ -3,6 +3,7 @@
 from ..image.color_format import (PixelPlane, PixelFormat, ColorFormat)
 from .rgb import ParserRGBA
 from .yuv import (ParserYUV420, ParserYUV422)
+from .greyscale import ParserGreyscale
 
 
 class ParserFactory:
@@ -19,6 +20,7 @@ class ParserFactory:
         mapping = {}
         if color_format.pixel_plane == PixelPlane.PACKED:
             mapping = {
+                PixelFormat.MONO: ParserGreyscale,
                 PixelFormat.RGBA: ParserRGBA,
                 PixelFormat.BGRA: ParserRGBA,
                 PixelFormat.YUYV: ParserYUV422,

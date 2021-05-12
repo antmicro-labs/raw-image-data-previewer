@@ -12,6 +12,7 @@ class PixelFormat(Enum):
     UYVY = 4
     YUV = 5
     YVU = 6
+    MONO = 7
     CUSTOM = 0
 
 
@@ -145,4 +146,28 @@ AVAILABLE_FORMATS = {
                 8,
                 8,
                 name="NV21"),
+    'GREY':
+    ColorFormat(PixelFormat.MONO,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                0,
+                0,
+                name="GREY"),
+    'GREY10':
+    ColorFormat(PixelFormat.MONO,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                10,
+                0,
+                0,
+                name="GREY"),
+    'GREY12':
+    ColorFormat(PixelFormat.MONO,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                12,
+                0,
+                0,
+                name="GREY12")
 }
