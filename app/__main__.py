@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from tkinter import StringVar
 import cv2 as cv
 """Raw image data previewer - terminal functionality."""
 
@@ -11,7 +12,10 @@ from .gui import MainWindow
 parser = argparse.ArgumentParser(
     prog=__package__,
     description="preview raw data as an image of chosen format")
-parser.add_argument("FILE_PATH", help="file containing raw image data")
+parser.add_argument("-f",
+                    "--FILE_PATH",
+                    help="file containing raw image data",
+                    default=None)
 parser.add_argument("-c",
                     "--color_format",
                     choices=AVAILABLE_FORMATS.keys(),
@@ -19,16 +23,17 @@ parser.add_argument("-c",
                     help="target color format (default: %(default)s)")
 parser.add_argument("-r",
                     "--resolution",
-                    metavar=("width", "height"),
+                    metavar=("width"),
                     type=int,
-                    nargs=2,
-                    default=[600, 600],
+                    nargs=1,
+                    default=600,
                     help="target resolution (default: %(default)s)")
 
 args = vars(parser.parse_args())
 
-if not os.path.isfile(args["FILE_PATH"]):
-    raise Exception("Given path does not lead to a file")
+if isinstance(args["FILE_PATH"], str):
+    if not os.path.isfile(args["FILE_PATH"]):
+        raise Exception("Given path does not lead to a file")
 
 #img = load_image(args["FILE_PATH"], args["color_format"], args["resolution"])
 app = MainWindow(args)
