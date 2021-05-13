@@ -29,6 +29,8 @@ class ParserFactory:
                 PixelFormat.ABGR: ParserARGB,
                 PixelFormat.YUYV: ParserYUV422,
                 PixelFormat.UYVY: ParserYUV422,
+                PixelFormat.VYUY: ParserYUV422,
+                PixelFormat.YVYU: ParserYUV422
             }
         elif color_format.pixel_plane == PixelPlane.SEMIPLANAR:
             mapping = {

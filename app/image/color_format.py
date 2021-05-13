@@ -8,14 +8,16 @@ class PixelFormat(Enum):
 
     RGBA = 1
     BGRA = 2
-    YUYV = 3
-    UYVY = 4
-    YUV = 5
-    YVU = 6
-    MONO = 7
-    BAYER_RG = 8
-    ARGB = 9
-    ABGR = 10
+    ARGB = 3
+    ABGR = 4
+    YUYV = 5
+    UYVY = 6
+    VYUY = 7
+    YVYU = 8
+    YUV = 9
+    YVU = 10
+    MONO = 11
+    BAYER_RG = 12
     CUSTOM = 0
 
 
@@ -225,6 +227,24 @@ AVAILABLE_FORMATS = {
                 name="YUY2"),
     'UYVY':
     ColorFormat(PixelFormat.UYVY,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                bpc4=8,
+                name="UYVY"),
+    'YVYU':
+    ColorFormat(PixelFormat.YVYU,
+                Endianness.BIG_ENDIAN,
+                PixelPlane.PACKED,
+                8,
+                8,
+                8,
+                bpc4=8,
+                name="YVYU"),
+    'VYUY':
+    ColorFormat(PixelFormat.VYUY,
                 Endianness.BIG_ENDIAN,
                 PixelPlane.PACKED,
                 8,

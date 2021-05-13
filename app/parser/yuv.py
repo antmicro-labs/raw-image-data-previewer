@@ -1,7 +1,7 @@
 """Parser implementation for  pixel format"""
 
-from ..image.color_format import *
-from ..image.image import *
+from ..image.color_format import PixelFormat
+from ..image.image import Image
 from .common import AbstractParser
 
 import numpy
@@ -125,16 +125,21 @@ class ParserYUV422(AbstractParser):
 
         Returns: Numpy array containing displayable data.
         """
-        return_data = image.processed_data
-
+        return_data = numpy.reshape(
+            image.processed_data.copy(),
+            (image.height, image.width, 2)).astype('uint8')
         conversion_const = None
         if image.color_format.pixel_format == PixelFormat.YUYV:
             conversion_const = cv.COLOR_YUV2RGB_YUYV
         elif image.color_format.pixel_format == PixelFormat.UYVY:
             conversion_const = cv.COLOR_YUV2RGB_UYVY
+        elif image.color_format.pixel_format == PixelFormat.YVYU:
+            conversion_const = cv.COLOR_YUV2RGB_YVYU
+        elif image.color_format.pixel_format == PixelFormat.VYUY:
+            conversion_const = cv.COLOR_YUV2RGB_UYVY
+            temp = numpy.copy(return_data[:, ::2, 0])
+            return_data[:, ::2, 0] = return_data[:, 1::2, 0]
+            return_data[:, 1::2, 0] = temp
 
-        return_data = cv.cvtColor(
-            numpy.reshape(return_data,
-                          (image.height, image.width, 2)).astype('uint8'),
-            conversion_const)
+        return_data = cv.cvtColor(return_data, conversion_const)
         return return_data
