@@ -24,7 +24,6 @@ parser.add_argument("-w",
                     "--width",
                     metavar=("width"),
                     type=int,
-                    nargs=1,
                     default=600,
                     help="target width (default: %(default)s)")
 
