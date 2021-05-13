@@ -46,10 +46,10 @@
 | RG12 | `V4L2_PIX_FMT_SRGGB12` | :heavy_check_mark: | :heavy_minus_sign: |
 | RG16 | `V4L2_PIX_FMT_SRGGB16` | :heavy_check_mark: | :heavy_minus_sign: |
 
-### GREYSCALE
+### GRAYSCALE
 
 | Name   |   VL42 Identifier   |   current support  |   future support   |
 |--------|:-------------------:|:------------------:|:------------------:|
-| GREY   | `V4L2_PIX_FMT_GREY` | :heavy_check_mark: | :heavy_minus_sign: |
-| GREY10 |  `V4L2_PIX_FMT_Y10` | :heavy_check_mark: | :heavy_minus_sign: |
-| GREY12 |  `V4L2_PIX_FMT_Y12` | :heavy_check_mark: | :heavy_minus_sign: |
+| GRAY   | `V4L2_PIX_FMT_GRAY` | :heavy_check_mark: | :heavy_minus_sign: |
+| GRAY10 |  `V4L2_PIX_FMT_Y10` | :heavy_check_mark: | :heavy_minus_sign: |
+| GRAY12 |  `V4L2_PIX_FMT_Y12` | :heavy_check_mark: | :heavy_minus_sign: |

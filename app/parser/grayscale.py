@@ -1,4 +1,4 @@
-"""Parser implementation for greyscale pixel format"""
+"""Parser implementation for grayscale pixel format"""
 
 from ..image.image import Image
 from .common import AbstractParser
@@ -7,8 +7,8 @@ import numpy
 import cv2 as cv
 
 
-class ParserGreyscale(AbstractParser):
-    """A greyscale implementation of a parser"""
+class ParserGrayscale(AbstractParser):
+    """A grayscale implementation of a parser"""
     def parse(self, raw_data, color_format, width):
         """Parses provided raw data to an image, calculating height from provided width.
 
@@ -21,9 +21,9 @@ class ParserGreyscale(AbstractParser):
         Returns: instance of Image processed to chosen format
         """
 
-        bits_per_grey = color_format.bits_per_components[0]
+        bits_per_gray = color_format.bits_per_components[0]
         curr_dtype = None
-        if bits_per_grey <= 8:
+        if bits_per_gray <= 8:
             curr_dtype = '>u1'
         else:
             curr_dtype = '>u2'

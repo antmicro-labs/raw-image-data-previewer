@@ -268,30 +268,30 @@ AVAILABLE_FORMATS = {
                 8,
                 8,
                 name="NV21"),
-    'GREY':
+    'GRAY':
     ColorFormat(PixelFormat.MONO,
                 Endianness.BIG_ENDIAN,
                 PixelPlane.PACKED,
                 8,
                 0,
                 0,
-                name="GREY"),
-    'GREY10':
+                name="GRAY"),
+    'GRAY10':
     ColorFormat(PixelFormat.MONO,
                 Endianness.BIG_ENDIAN,
                 PixelPlane.PACKED,
                 10,
                 0,
                 0,
-                name="GREY10"),
-    'GREY12':
+                name="GRAY10"),
+    'GRAY12':
     ColorFormat(PixelFormat.MONO,
                 Endianness.BIG_ENDIAN,
                 PixelPlane.PACKED,
                 12,
                 0,
                 0,
-                name="GREY12"),
+                name="GRAY12"),
     'RGGB':
     ColorFormat(PixelFormat.BAYER_RG,
                 Endianness.BIG_ENDIAN,

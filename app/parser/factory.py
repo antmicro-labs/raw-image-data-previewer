@@ -4,7 +4,7 @@ from .bayer import ParserBayerRG
 from ..image.color_format import (PixelPlane, PixelFormat)
 from .rgb import ParserARGB, ParserRGBA
 from .yuv import (ParserYUV420, ParserYUV422)
-from .greyscale import ParserGreyscale
+from .grayscale import ParserGrayscale
 
 
 class ParserFactory:
@@ -22,7 +22,7 @@ class ParserFactory:
         if color_format.pixel_plane == PixelPlane.PACKED:
             mapping = {
                 PixelFormat.BAYER_RG: ParserBayerRG,
-                PixelFormat.MONO: ParserGreyscale,
+                PixelFormat.MONO: ParserGrayscale,
                 PixelFormat.RGBA: ParserRGBA,
                 PixelFormat.BGRA: ParserRGBA,
                 PixelFormat.ARGB: ParserARGB,
