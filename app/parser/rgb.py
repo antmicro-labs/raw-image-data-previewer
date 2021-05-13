@@ -34,7 +34,7 @@ class ParserRGBA(AbstractParser):
 
 class ParserARGB(AbstractParser):
     """An RGB/BGR implementation of a parser - ALPHA FIRST"""
-    def parse(self, raw_data, color_format, width, height=None):
+    def parse(self, raw_data, color_format, width):
         """Parses provided raw data to an image, calculating height from provided width.
 
         Keyword arguments:

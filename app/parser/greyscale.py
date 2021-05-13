@@ -9,7 +9,7 @@ import cv2 as cv
 
 class ParserGreyscale(AbstractParser):
     """A greyscale implementation of a parser"""
-    def parse(self, raw_data, color_format, width, height=None):
+    def parse(self, raw_data, color_format, width):
         """Parses provided raw data to an image, calculating height from provided width.
 
         Keyword arguments:
