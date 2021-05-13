@@ -11,7 +11,7 @@ class AbstractParser(metaclass=ABCMeta):
     """An abstract data parser"""
     @abstractmethod
     def get_displayable(self, image):
-        """Provides displayable image data (BGR formatted)
+        """Provides displayable image data (RGB formatted)
         
         Keyword arguments:
 
@@ -84,10 +84,8 @@ class AbstractParser(metaclass=ABCMeta):
 
             raw_data: bytes object
             color_format: target instance of ColorFormat
-            width: target width to interpret
-            height: target height to interpret
 
-        Returns: instance of Image processed to chosen format
+        Returns: properly parsed buffer data (list)
         """
 
         comp_bits = color_format.bits_per_components

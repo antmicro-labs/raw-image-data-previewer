@@ -42,7 +42,6 @@ class ParserARGB(AbstractParser):
             raw_data: bytes object
             color_format: target instance of ColorFormat
             width: target width to interpret
-            height: (deprecated) target height to interpret, default: None
 
         Returns: instance of Image processed to chosen format
         """

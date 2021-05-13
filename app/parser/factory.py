@@ -1,6 +1,6 @@
 """Factory returning proper parser"""
 
-from app.parser.bayer import ParserBayerRG
+from .bayer import ParserBayerRG
 from ..image.color_format import (PixelPlane, PixelFormat)
 from .rgb import ParserARGB, ParserRGBA
 from .yuv import (ParserYUV420, ParserYUV422)

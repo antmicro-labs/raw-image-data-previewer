@@ -1,4 +1,4 @@
-"""Parser implementation for  pixel format"""
+"""Parser implementation for YUV pixel format"""
 
 from ..image.color_format import PixelFormat
 from ..image.image import Image
@@ -19,7 +19,6 @@ class ParserYUV420(AbstractParser):
             raw_data: bytes object
             color_format: target instance of ColorFormat
             width: target width to interpret
-            height: (deprecated) target height to interpret, default: None
 
         Returns: instance of Image processed to chosen format
         """
@@ -98,7 +97,6 @@ class ParserYUV422(AbstractParser):
             raw_data: bytes object
             color_format: target instance of ColorFormat
             width: target width to interpret
-            height: (deprecated) target height to interpret, default: None
 
         Returns: instance of Image processed to chosen format
         """
