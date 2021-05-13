@@ -1,8 +1,8 @@
 """Factory returning proper parser"""
 
 from app.parser.bayer import ParserBayerRG
-from ..image.color_format import (PixelPlane, PixelFormat, ColorFormat)
-from .rgb import ParserRGBA
+from ..image.color_format import (PixelPlane, PixelFormat)
+from .rgb import ParserARGB, ParserRGBA
 from .yuv import (ParserYUV420, ParserYUV422)
 from .greyscale import ParserGreyscale
 
@@ -25,6 +25,8 @@ class ParserFactory:
                 PixelFormat.MONO: ParserGreyscale,
                 PixelFormat.RGBA: ParserRGBA,
                 PixelFormat.BGRA: ParserRGBA,
+                PixelFormat.ARGB: ParserARGB,
+                PixelFormat.ABGR: ParserARGB,
                 PixelFormat.YUYV: ParserYUV422,
                 PixelFormat.UYVY: ParserYUV422,
             }

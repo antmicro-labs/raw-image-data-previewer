@@ -2,7 +2,7 @@
 
 from abc import ABCMeta, abstractmethod
 from ..image.image import Image
-from ..image.color_format import (ColorFormat, PixelFormat, Endianness)
+from ..image.color_format import Endianness
 import numpy
 import math
 
@@ -74,7 +74,6 @@ class AbstractParser(metaclass=ABCMeta):
                 (processed_data,
                  numpy.zeros((width * 4) - (processed_data.size %
                                             (width * 4)))))
-        print('costam {}'.format(processed_data.size / (width * 4)))
         return Image(raw_data, color_format, processed_data, width,
                      processed_data.size // (width * 4))
 
