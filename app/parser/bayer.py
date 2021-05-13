@@ -32,6 +32,13 @@ class ParserBayerRG(AbstractParser):
         processed_data = []
         if len(set(color_format.bits_per_components)) == 2 or len(
                 set(color_format.bits_per_components)) == 1:
+
+            raw_data = bytearray(raw_data)
+            if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+                raw_data += (0).to_bytes(len(raw_data) %
+                                         numpy.dtype(curr_dtype).alignment,
+                                         byteorder="little")
+
             processed_data = numpy.frombuffer(raw_data, dtype=curr_dtype)
         else:
             raise NotImplementedError(
@@ -60,4 +67,5 @@ class ParserBayerRG(AbstractParser):
         return_data[:, :] = (255 * return_data[:, :]) / (
             2**image.color_format.bits_per_components[0] - 1)
 
+        # Converting from Bayer BG (but data is Bayer RG) to RGB -> THIS IS A BUG IN OPENCV
         return cv.cvtColor(return_data.astype('uint8'), cv.COLOR_BAYER_BG2RGB)

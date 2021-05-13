@@ -30,6 +30,11 @@ class ParserYUV420(AbstractParser):
         data_array = []
         if len(set(
                 color_format.bits_per_components)) == 2 and max_value % 8 == 0:
+            raw_data = bytearray(raw_data)
+            if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+                raw_data += (0).to_bytes(len(raw_data) %
+                                         numpy.dtype(curr_dtype).alignment,
+                                         byteorder="little")
             data_array = numpy.frombuffer(raw_data, dtype=curr_dtype)
         else:
             raise NotImplementedError(
@@ -104,6 +109,11 @@ class ParserYUV422(AbstractParser):
 
         if len(set(
                 color_format.bits_per_components)) == 1 and max_value % 8 == 0:
+            raw_data = bytearray(raw_data)
+            if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+                raw_data += (0).to_bytes(len(raw_data) %
+                                         numpy.dtype(curr_dtype).alignment,
+                                         byteorder="little")
             data_array = numpy.frombuffer(raw_data, dtype=curr_dtype)
         else:
             raise NotImplementedError(

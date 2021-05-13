@@ -29,6 +29,11 @@ class ParserGreyscale(AbstractParser):
         else:
             curr_dtype = '>u2'
 
+        raw_data = bytearray(raw_data)
+        if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+            raw_data += (0).to_bytes(len(raw_data) %
+                                     numpy.dtype(curr_dtype).alignment,
+                                     byteorder="little")
         processed_data = numpy.frombuffer(raw_data, dtype=curr_dtype)
         if (processed_data.size % width != 0):
             processed_data = numpy.concatenate(

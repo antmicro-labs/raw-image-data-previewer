@@ -51,18 +51,19 @@ class ParserARGB(AbstractParser):
         curr_dtype = None
         if max_value <= 8:
             curr_dtype = numpy.uint8
-        elif max_value <= 16:
-            curr_dtype = numpy.uint16
-        elif max_value <= 32:
-            curr_dtype = numpy.uint32
         else:
-            curr_dtype = numpy.uint64
+            curr_dtype = numpy.uint16
 
         data_array = []
         temp_set = set(color_format.bits_per_components)
 
         if (len(temp_set) == 1 or len(temp_set) == 2
                 and not temp_set.add(0)) and max_value % 8 == 0:
+            raw_data = bytearray(raw_data)
+            if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+                raw_data += (0).to_bytes(len(raw_data) %
+                                         numpy.dtype(curr_dtype).alignment,
+                                         byteorder="little")
             temp = numpy.frombuffer(raw_data, dtype=curr_dtype)
             data_array = temp
             if len(temp_set) == 2:
