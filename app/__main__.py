@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from tkinter import StringVar
 import cv2 as cv
 """Raw image data previewer - terminal functionality."""
 
@@ -21,13 +20,13 @@ parser.add_argument("-c",
                     choices=AVAILABLE_FORMATS.keys(),
                     default=list(AVAILABLE_FORMATS.keys())[0],
                     help="target color format (default: %(default)s)")
-parser.add_argument("-r",
-                    "--resolution",
+parser.add_argument("-w",
+                    "--width",
                     metavar=("width"),
                     type=int,
                     nargs=1,
                     default=600,
-                    help="target resolution (default: %(default)s)")
+                    help="target width (default: %(default)s)")
 
 args = vars(parser.parse_args())
 

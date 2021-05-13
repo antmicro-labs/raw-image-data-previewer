@@ -16,7 +16,7 @@ class MainWindow(tk.Frame):
         self.frm_image = tk.Label(self.master, bg=self.bg_color)
         self.frm_image.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
         self.pack()
-        self.init_width = args["resolution"]
+        self.init_width = args["width"]
         self.path_to_File = args["FILE_PATH"]
         self.init_color_format = args["color_format"]
         self.widget_font = tkFont.Font(family='Gill Sans MT',
