@@ -1,8 +1,10 @@
 """Factory returning proper parser"""
 
-from ..image.color_format import (PixelPlane, PixelFormat, ColorFormat)
-from .rgb import ParserRGBA
+from .bayer import ParserBayerRG
+from ..image.color_format import (PixelPlane, PixelFormat)
+from .rgb import ParserARGB, ParserRGBA
 from .yuv import (ParserYUV420, ParserYUV422)
+from .grayscale import ParserGrayscale
 
 
 class ParserFactory:
@@ -19,10 +21,16 @@ class ParserFactory:
         mapping = {}
         if color_format.pixel_plane == PixelPlane.PACKED:
             mapping = {
+                PixelFormat.BAYER_RG: ParserBayerRG,
+                PixelFormat.MONO: ParserGrayscale,
                 PixelFormat.RGBA: ParserRGBA,
                 PixelFormat.BGRA: ParserRGBA,
+                PixelFormat.ARGB: ParserARGB,
+                PixelFormat.ABGR: ParserARGB,
                 PixelFormat.YUYV: ParserYUV422,
                 PixelFormat.UYVY: ParserYUV422,
+                PixelFormat.VYUY: ParserYUV422,
+                PixelFormat.YVYU: ParserYUV422
             }
         elif color_format.pixel_plane == PixelPlane.SEMIPLANAR:
             mapping = {

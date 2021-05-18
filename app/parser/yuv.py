@@ -1,7 +1,7 @@
-"""Parser implementation for  pixel format"""
+"""Parser implementation for YUV pixel format"""
 
-from ..image.color_format import *
-from ..image.image import *
+from ..image.color_format import PixelFormat
+from ..image.image import Image
 from .common import AbstractParser
 
 import numpy
@@ -11,7 +11,7 @@ import math
 
 class ParserYUV420(AbstractParser):
     """A semi-planar YUV420 implementation of a parser"""
-    def parse(self, raw_data, color_format, width, height=None):
+    def parse(self, raw_data, color_format, width):
         """Parses provided raw data to an image, calculating height from provided width.
 
         Keyword arguments:
@@ -19,7 +19,6 @@ class ParserYUV420(AbstractParser):
             raw_data: bytes object
             color_format: target instance of ColorFormat
             width: target width to interpret
-            height: (deprecated) target height to interpret, default: None
 
         Returns: instance of Image processed to chosen format
         """
@@ -30,6 +29,11 @@ class ParserYUV420(AbstractParser):
         data_array = []
         if len(set(
                 color_format.bits_per_components)) == 2 and max_value % 8 == 0:
+            raw_data = bytearray(raw_data)
+            if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+                raw_data += (0).to_bytes(len(raw_data) %
+                                         numpy.dtype(curr_dtype).alignment,
+                                         byteorder="little")
             data_array = numpy.frombuffer(raw_data, dtype=curr_dtype)
         else:
             raise NotImplementedError(
@@ -85,7 +89,7 @@ class ParserYUV420(AbstractParser):
 
 class ParserYUV422(AbstractParser):
     """A packed YUV422 implementation of a parser"""
-    def parse(self, raw_data, color_format, width, height=None):
+    def parse(self, raw_data, color_format, width):
         """Parses provided raw data to an image, calculating height from provided width.
 
         Keyword arguments:
@@ -93,7 +97,6 @@ class ParserYUV422(AbstractParser):
             raw_data: bytes object
             color_format: target instance of ColorFormat
             width: target width to interpret
-            height: (deprecated) target height to interpret, default: None
 
         Returns: instance of Image processed to chosen format
         """
@@ -104,6 +107,11 @@ class ParserYUV422(AbstractParser):
 
         if len(set(
                 color_format.bits_per_components)) == 1 and max_value % 8 == 0:
+            raw_data = bytearray(raw_data)
+            if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+                raw_data += (0).to_bytes(len(raw_data) %
+                                         numpy.dtype(curr_dtype).alignment,
+                                         byteorder="little")
             data_array = numpy.frombuffer(raw_data, dtype=curr_dtype)
         else:
             raise NotImplementedError(
@@ -125,16 +133,21 @@ class ParserYUV422(AbstractParser):
 
         Returns: Numpy array containing displayable data.
         """
-        return_data = image.processed_data
-
+        return_data = numpy.reshape(
+            image.processed_data.copy(),
+            (image.height, image.width, 2)).astype('uint8')
         conversion_const = None
         if image.color_format.pixel_format == PixelFormat.YUYV:
             conversion_const = cv.COLOR_YUV2RGB_YUYV
         elif image.color_format.pixel_format == PixelFormat.UYVY:
             conversion_const = cv.COLOR_YUV2RGB_UYVY
+        elif image.color_format.pixel_format == PixelFormat.YVYU:
+            conversion_const = cv.COLOR_YUV2RGB_YVYU
+        elif image.color_format.pixel_format == PixelFormat.VYUY:
+            conversion_const = cv.COLOR_YUV2RGB_UYVY
+            temp = numpy.copy(return_data[:, ::2, 0])
+            return_data[:, ::2, 0] = return_data[:, 1::2, 0]
+            return_data[:, 1::2, 0] = temp
 
-        return_data = cv.cvtColor(
-            numpy.reshape(return_data,
-                          (image.height, image.width, 2)).astype('uint8'),
-            conversion_const)
+        return_data = cv.cvtColor(return_data, conversion_const)
         return return_data

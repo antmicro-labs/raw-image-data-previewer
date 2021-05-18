@@ -57,8 +57,6 @@ class TestYUVParserClass(unittest.TestCase):
         self.parserY422 = ParserYUV422()
 
     @patch("app.parser.yuv.PixelFormat", DummyPixelFormat)
-    @patch("app.parser.yuv.Endianness", DummyEndianness)
-    @patch("app.parser.yuv.PixelPlane", DummyPixelPlane)
     def test_parse_Y420(self):
 
         parsed_img = self.parserY420.parse(self.raw_data_Y420,
@@ -72,8 +70,6 @@ class TestYUVParserClass(unittest.TestCase):
             parsed_img.processed_data == self.Y420_IMAGE.processed_data).all())
 
     @patch("app.parser.yuv.PixelFormat", DummyPixelFormat)
-    @patch("app.parser.yuv.Endianness", DummyEndianness)
-    @patch("app.parser.yuv.PixelPlane", DummyPixelPlane)
     def test_parse_Y422(self):
         parsed_img = self.parserY422.parse(self.raw_data_Y422,
                                            self.Y422_FORMAT, 2)
@@ -86,8 +82,6 @@ class TestYUVParserClass(unittest.TestCase):
             parsed_img.processed_data == self.Y422_IMAGE.processed_data).all())
 
     @patch("app.parser.yuv.PixelFormat", DummyPixelFormat)
-    @patch("app.parser.yuv.Endianness", DummyEndianness)
-    @patch("app.parser.yuv.PixelPlane", DummyPixelPlane)
     def test_get_displayable_Y420(self):
 
         displayable = self.parserY420.get_displayable(self.Y420_IMAGE)
@@ -99,8 +93,6 @@ class TestYUVParserClass(unittest.TestCase):
                                                       [0, 54, 255]]])).all())
 
     @patch("app.parser.yuv.PixelFormat", DummyPixelFormat)
-    @patch("app.parser.yuv.Endianness", DummyEndianness)
-    @patch("app.parser.yuv.PixelPlane", DummyPixelPlane)
     def test_get_displayable_Y422(self):
 
         displayable = self.parserY422.get_displayable(self.Y422_IMAGE)
