@@ -4,7 +4,7 @@ import cv2 as cv
 
 import argparse
 import os
-from .core import (load_image, get_displayable)
+from .core import (save_image_as_file, get_displayable, load_image)
 from .image.color_format import AVAILABLE_FORMATS
 from .gui import MainWindow
 
@@ -24,15 +24,24 @@ parser.add_argument("-r",
                     nargs=2,
                     default=[600, 600],
                     help="target resolution (default: %(default)s)")
+parser.add_argument(
+    "-e",
+    "--export",
+    metavar="RESULT_PATH",
+    help="destination file for parsed image, and it's extension")
 
 args = vars(parser.parse_args())
 
 if not os.path.isfile(args["FILE_PATH"]):
     raise Exception("Given path does not lead to a file")
 
-#img = load_image(args["FILE_PATH"], args["color_format"], args["resolution"])
-app = MainWindow(args)
-app.mainloop()
+if args["export"] is None:
+    app = MainWindow(args)
+    app.mainloop()
+else:
+    img = load_image(args["FILE_PATH"], args["color_format"],
+                     args["resolution"])
+    save_image_as_file(get_displayable(img), args["export"])
 """
 cv.imshow(args["FILE_PATH"], get_displayable(img))
 cv.waitKey(0)
