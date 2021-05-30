@@ -33,9 +33,9 @@
 | YVYU |   `V4L2_PIX_FMT_YVYU`  |    PACKED   | :heavy_check_mark: | :heavy_minus_sign: |
 | NV12 |   `V4L2_PIX_FMT_NV12`  | SEMI-PLANAR | :heavy_check_mark: | :heavy_minus_sign: |
 | NV21 |   `V4L2_PIX_FMT_NV21`  | SEMI-PLANAR | :heavy_check_mark: | :heavy_minus_sign: |
-| I420 |  `V4L2_PIX_FMT_YUV420` |    PLANAR   |         :x:        | :heavy_check_mark: |
-| YV12 |  `V4L2_PIX_FMT_YVU420` |    PLANAR   |         :x:        | :heavy_check_mark: |
-| I422 | `V4L2_PIX_FMT_YUV422P` |    PLANAR   |         :x:        | :heavy_check_mark: |
+| I420 |  `V4L2_PIX_FMT_YUV420` |    PLANAR   | :heavy_check_mark: |  :heavy_minus_sign: |
+| YV12 |  `V4L2_PIX_FMT_YVU420` |    PLANAR   | :heavy_check_mark: | :heavy_minus_sign: |
+| I422 | `V4L2_PIX_FMT_YUV422P` |    PLANAR   | :heavy_check_mark: | :heavy_minus_sign: |
 
 ### Bayer RGB
 
