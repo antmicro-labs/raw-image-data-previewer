@@ -11,19 +11,21 @@ from .gui import MainWindow
 parser = argparse.ArgumentParser(
     prog=__package__,
     description="preview raw data as an image of chosen format")
-parser.add_argument("FILE_PATH", help="file containing raw image data")
+parser.add_argument("-f",
+                    "--FILE_PATH",
+                    help="file containing raw image data",
+                    default=None)
 parser.add_argument("-c",
                     "--color_format",
                     choices=AVAILABLE_FORMATS.keys(),
                     default=list(AVAILABLE_FORMATS.keys())[0],
                     help="target color format (default: %(default)s)")
-parser.add_argument("-r",
-                    "--resolution",
-                    metavar=("width", "height"),
+parser.add_argument("-w",
+                    "--width",
+                    metavar=("width"),
                     type=int,
-                    nargs=2,
-                    default=[600, 600],
-                    help="target resolution (default: %(default)s)")
+                    default=600,
+                    help="target width (default: %(default)s)")
 parser.add_argument(
     "-e",
     "--export",
@@ -32,8 +34,9 @@ parser.add_argument(
 
 args = vars(parser.parse_args())
 
-if not os.path.isfile(args["FILE_PATH"]):
-    raise Exception("Given path does not lead to a file")
+if isinstance(args["FILE_PATH"], str):
+    if not os.path.isfile(args["FILE_PATH"]):
+        raise Exception("Given path does not lead to a file")
 
 if args["export"] is None:
     app = MainWindow(args)

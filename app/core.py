@@ -7,7 +7,7 @@ import cv2 as cv
 import os
 
 
-def load_image(file_path, color_format, resolution):
+def load_image(file_path, color_format, width):
     try:
         image = Image.from_file(file_path)
         parser = ParserFactory.create_object(
@@ -16,8 +16,8 @@ def load_image(file_path, color_format, resolution):
         print(type(e).__name__, e)
 
     image = parser.parse(image.data_buffer,
-                         determine_color_format(color_format), resolution[0],
-                         resolution[1])
+                         determine_color_format(color_format), width)
+
     return image
 
 

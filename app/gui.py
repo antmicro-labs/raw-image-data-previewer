@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.font as tkFont
 from tkinter.filedialog import askopenfilename
 
+from .canvas import CanvasImage
 from .core import (load_image, get_displayable)
 from .image.color_format import AVAILABLE_FORMATS
 from PIL import Image, ImageTk
@@ -12,31 +13,29 @@ class MainWindow(tk.Frame):
     def __init__(self, args, master=tk.Tk()):
         tk.Frame.__init__(self, master)
         self.master = master
+        self.master.geometry('1200x600')
+
         self.bg_color = "#C9C9C9"
-        self.frm_image = tk.Label(self.master, bg=self.bg_color)
-        self.frm_image.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+
+        self.photoframe = tk.Frame(self.master)
+        self.photoframe.rowconfigure(0, weight=1)
+        self.photoframe.columnconfigure(0, weight=1)
+        self.photoframe.pack(fill=tk.BOTH, side=tk.LEFT)
+
         self.pack()
-        self.init_width = args["resolution"][0]
-        self.init_height = args["resolution"][1]
+        self.init_width = args["width"]
         self.path_to_File = args["FILE_PATH"]
         self.init_color_format = args["color_format"]
         self.widget_font = tkFont.Font(family='Gill Sans MT',
                                        size=10,
                                        weight=tkFont.NORMAL)
         self.img_tk = None
-        self.create_image()
+        self.canvas = None
+        if self.path_to_File != None:
+            self.canvas = CanvasImage(self.photoframe, self.path_to_File,
+                                      self.init_color_format, self.init_width)
+            self.canvas.grid(row=0, column=0)
         self.create_widgets(args)
-
-    def create_image(self):
-        resolution = [self.init_width, self.init_height]
-        img = load_image(self.path_to_File, self.init_color_format, resolution)
-        self.img_tk = Image.fromarray(get_displayable(img))
-        img_tk = ImageTk.PhotoImage(image=self.img_tk)
-        self.frm_image.img_tk = img_tk
-        self.frm_image.config(image=img_tk)
-        resolution_string = str(resolution[0] +
-                                200) + "x" + str(resolution[1] + 20)
-        self.master.geometry(resolution_string)
 
     def open_file(self):
         self.path_to_File = askopenfilename(filetypes=[("All Files", "*")])
@@ -44,15 +43,15 @@ class MainWindow(tk.Frame):
             raise Exception("Given path does not lead to a file")
 
     def update_image(self):
-        resolution = [int(self.ent_width.get()), int(self.ent_height.get())]
-        img = load_image(self.path_to_File, self.v.get(), resolution)
-        self.img_tk = Image.fromarray(get_displayable(img))
-        img_tk = ImageTk.PhotoImage(image=self.img_tk)
-        self.frm_image.img_tk = img_tk
-        self.frm_image.config(image=img_tk)
-        resolution_string = str(resolution[0] +
-                                200) + "x" + str(resolution[1] + 20)
-        self.master.geometry(resolution_string)
+        if self.canvas != None:
+            self.canvas.destroy()
+        self.canvas = CanvasImage(self.photoframe, self.path_to_File,
+                                  self.v.get(), int(self.ent_width.get()))
+        self.ent_height.delete(0, len(self.ent_height.get()))
+        self.ent_width.delete(0, len(self.ent_width.get()))
+        self.ent_width.insert(0, self.canvas.imwidth)
+        self.ent_height.insert(0, self.canvas.imheight)
+        self.canvas.grid()
 
     def create_widgets(self, args):
         # Main window
@@ -127,11 +126,17 @@ class MainWindow(tk.Frame):
         self.ent_width = tk.Entry(master=frm_width,
                                   width=10,
                                   font=self.widget_font)
-        self.ent_width.insert(0, self.img_tk.width)
+
         self.ent_height = tk.Entry(master=frm_height,
                                    width=10,
                                    font=self.widget_font)
-        self.ent_height.insert(0, self.img_tk.height)
+
+        if self.path_to_File != None:
+            self.ent_width.insert(0, self.canvas.imwidth)
+            self.ent_height.insert(0, self.canvas.imheight)
+        else:
+            self.ent_width.insert(0, 0)
+            self.ent_height.insert(0, 0)
         self.ent_height.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
         self.ent_width.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
         frm_size.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
