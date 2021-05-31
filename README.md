@@ -1,55 +1,87 @@
-# raw-image-data-previewer
+# Raw image data previewer
+
+Raw image data previewer is an open-source utility dedicated to parsing and displaying binary data acquired straight from camera.
+
+![Main window](docs/img/ridp-1.png)
+
+This simple utility provides options like:
+* previewing most used raw color formats
+    * RGB-like formats
+    * YUVs (packed, semiplanar, planar)
+    * Grayscales
+    * Bayer RGBs
+* exporting raw image data to more complex formats (ie. PNG, JPG)
+
+# Installation
+
+## Requirements
+
+* Python >=v3.9
+* numpy
+* opencv
+* PIL
+
+## Installation
+
+### Manjaro Linux
+
+```bash
+sudo pacman -Sy python-pip git
+git clone https://github.com/antmicro-labs/raw-image-data-previewer.git
+cd raw-image-data-previewer
+pip install -r requirements.txt
+```
+
+### Ubuntu 20.04
+
+```bash
+sudo apt-get install python3-pip git
+git clone https://github.com/antmicro-labs/raw-image-data-previewer.git
+cd raw-image-data-previewer
+python3 -m pip install -r requirements.txt
+```
+
+# Usage
+
+To start empty GUI (without loaded data) use:
+```bash
+cd raw-image-data-previewer
+python3 -m app
+```
+
+You can also start GUI with already loaded data and parameters (like width and color format). More informations about available arguments can be found in command-line help:
+```bash
+cd raw-image-data-previewer
+python3 -m app --help
+```
+
+## Exporting images
+Utility also provides a way to convert binary files containing image data to more complex formats (ie. PNG, JPG) without starting grahpical interface.
+To use ths option simply add argument `--export` with destination file and its extension.
+
 
 ## Supported formats informations
 
-### RGB-like
+Currently supported color formats and planned ones can be found [here](docs/SUPPORTED_FORMATS.md).
 
-| Name    |     VL42 Identifier    |   current support  |   future support   |
-|---------|:----------------------:|:------------------:|:------------------:|
-| RGB332  | `V4L2_PIX_FMT_RGB332`  | :heavy_check_mark: | :heavy_minus_sign: |
-| ARGB444 | `V4L2_PIX_FMT_ARGB444` | :heavy_check_mark: | :heavy_minus_sign: |
-| RGBA444 | `V4L2_PIX_FMT_RGBA444` | :heavy_check_mark: | :heavy_minus_sign: |
-| ABGR444 | `V4L2_PIX_FMT_ABGR444` | :heavy_check_mark: | :heavy_minus_sign: |
-| BGRA444 | `V4L2_PIX_FMT_BGRA444` | :heavy_check_mark: | :heavy_minus_sign: |
-| ARGB555 | `V4L2_PIX_FMT_ARGB555` | :heavy_check_mark: | :heavy_minus_sign: |
-| RGBA555 | `V4L2_PIX_FMT_RGBA555` | :heavy_check_mark: | :heavy_minus_sign: |
-| ABGR555 | `V4L2_PIX_FMT_ABGR555` | :heavy_check_mark: | :heavy_minus_sign: |
-| BGRA555 | `V4L2_PIX_FMT_BGRA555` | :heavy_check_mark: | :heavy_minus_sign: |
-| RGB565  | `V4L2_PIX_FMT_RGB565`  | :heavy_check_mark: | :heavy_minus_sign: |
-| BGR24   | `V4L2_PIX_FMT_BGR24`   | :heavy_check_mark: | :heavy_minus_sign: |
-| RGB24   | `V4L2_PIX_FMT_RGB24`   | :heavy_check_mark: | :heavy_minus_sign: |
-| ABGR32  | `V4L2_PIX_FMT_ABGR32`  | :heavy_check_mark: | :heavy_minus_sign: |
-| BGRA32  | `V4L2_PIX_FMT_BGRA32`  | :heavy_check_mark: | :heavy_minus_sign: |
-| RGBA32  | `V4L2_PIX_FMT_RGBA32`  | :heavy_check_mark: | :heavy_minus_sign: |
-| ARGB32  | `V4L2_PIX_FMT_ARGB32`  | :heavy_check_mark: | :heavy_minus_sign: |
+# Extending supported color formats
 
-### YUV
+## Adding new color formats
 
-| Name |     VL42 Identifier    | Pixel plane |   current support  |   future support   |
-|------|:----------------------:|:-----------:|:------------------:|:------------------:|
-| UYVY |   `V4L2_PIX_FMT_UYVY`  |    PACKED   | :heavy_check_mark: | :heavy_minus_sign: |
-| YUYV |   `V4L2_PIX_FMT_YUYV`  |    PACKED   | :heavy_check_mark: | :heavy_minus_sign: |
-| VYUY |   `V4L2_PIX_FMT_VYUY`  |    PACKED   | :heavy_check_mark: | :heavy_minus_sign: |
-| YVYU |   `V4L2_PIX_FMT_YVYU`  |    PACKED   | :heavy_check_mark: | :heavy_minus_sign: |
-| NV12 |   `V4L2_PIX_FMT_NV12`  | SEMI-PLANAR | :heavy_check_mark: | :heavy_minus_sign: |
-| NV21 |   `V4L2_PIX_FMT_NV21`  | SEMI-PLANAR | :heavy_check_mark: | :heavy_minus_sign: |
-| I420 |  `V4L2_PIX_FMT_YUV420` |    PLANAR   | :heavy_check_mark: |  :heavy_minus_sign: |
-| YV12 |  `V4L2_PIX_FMT_YVU420` |    PLANAR   | :heavy_check_mark: | :heavy_minus_sign: |
-| I422 | `V4L2_PIX_FMT_YUV422P` |    PLANAR   | :heavy_check_mark: | :heavy_minus_sign: |
+Currently there are two classes that can describe color formats: `ColorFormat` and `SubsampledColorFormat` (found in `app/image/color_format.py`).
+To create new color format, simply:
+1. Under `AVAILABLE_FORMATS` list in `color_format.py` add new instance of one of the color format classes with proper fields filled.
+2. Provide parsing and displaying function by extending `AbstractParser` found in `common.py` or by using existing one.
+    * If you choose to implement new one remember, that `parse()` should return one dimensional `ndarray` with values read from the binary file. `display()` on the other hand should return RGB-formatted 3-dimensional `ndarray` consisting of original color format values converted to RGB24.
+3. Utility provides proper parser by checking color format parameteres (mainly `PixelFormat`), so make sure, that your new color format has a valid translation of parameteres to one of the parsers (this functionality can be found in `app/parser/factory.py`).
 
-### Bayer RGB
+## Contributors
 
-| Name |     VL42 Identifier    |   current support  |   future support   |
-|------|:----------------------:|:------------------:|:------------------:|
-| RGGB |  `V4L2_PIX_FMT_SRGGB8` | :heavy_check_mark: | :heavy_minus_sign: |
-| RG10 | `V4L2_PIX_FMT_SRGGB10` | :heavy_check_mark: | :heavy_minus_sign: |
-| RG12 | `V4L2_PIX_FMT_SRGGB12` | :heavy_check_mark: | :heavy_minus_sign: |
-| RG16 | `V4L2_PIX_FMT_SRGGB16` | :heavy_check_mark: | :heavy_minus_sign: |
+* Błażej Ułanowicz ([blazejulanowicz](https://github.com/blazejulanowicz))
+* Dawid Dopart ([DopartDawid](https://github.com/DopartDawid))
+* Maciej Tylak ([Ty7ak](https://github.com/Ty7ak))
+* Maciej Franikowski ([MaciejFranikowski](https://github.com/MaciejFranikowski))
 
-### GRAYSCALE
+# License
 
-| Name   |   VL42 Identifier   |   current support  |   future support   |
-|--------|:-------------------:|:------------------:|:------------------:|
-| GRAY   | `V4L2_PIX_FMT_GRAY` | :heavy_check_mark: | :heavy_minus_sign: |
-| GRAY10 |  `V4L2_PIX_FMT_Y10` | :heavy_check_mark: | :heavy_minus_sign: |
-| GRAY12 |  `V4L2_PIX_FMT_Y12` | :heavy_check_mark: | :heavy_minus_sign: |
+Utility is licensed under Apache-2 license. More on that [here](LICENSE).
