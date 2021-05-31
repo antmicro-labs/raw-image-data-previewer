@@ -3,7 +3,8 @@
 from .bayer import ParserBayerRG
 from ..image.color_format import (PixelPlane, PixelFormat)
 from .rgb import ParserARGB, ParserRGBA
-from .yuv import (ParserYUV420, ParserYUV422)
+from .yuv import (ParserYUV420, ParserYUV420Planar, ParserYUV422,
+                  ParserYUV422Planar)
 from .grayscale import ParserGrayscale
 
 
@@ -37,6 +38,14 @@ class ParserFactory:
                 PixelFormat.YUV: ParserYUV420,
                 PixelFormat.YVU: ParserYUV420,
             }
+        elif color_format.pixel_plane == PixelPlane.PLANAR:
+            if color_format.subsampling_vertical == 1:
+                mapping = {PixelFormat.YUV: ParserYUV422Planar}
+            else:
+                mapping = {
+                    PixelFormat.YUV: ParserYUV420Planar,
+                    PixelFormat.YVU: ParserYUV420Planar
+                }
 
         proper_class = mapping.get(color_format.pixel_format)
         if proper_class is None:
