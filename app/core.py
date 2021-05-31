@@ -3,6 +3,8 @@
 from .image.image import (Image, RawDataContainer)
 from .image.color_format import AVAILABLE_FORMATS
 from .parser.factory import ParserFactory
+import cv2 as cv
+import os
 
 
 def load_image(file_path, color_format, width):
@@ -35,3 +37,20 @@ def determine_color_format(format_string):
     else:
         raise NotImplementedError(
             "Provided string is not name of supported format.")
+
+
+def save_image_as_file(image, file_path):
+
+    directory = file_path.replace('\\', '/')
+    if directory.rfind('/') == -1:
+        directory = './'
+    else:
+        directory = directory[:directory.rfind("/")]
+
+    if not os.path.isdir(directory):
+        os.makedirs(directory)
+
+    try:
+        cv.imwrite(file_path, cv.cvtColor(image, cv.COLOR_RGB2BGR))
+    except Exception as e:
+        print(type(e).__name__, e)

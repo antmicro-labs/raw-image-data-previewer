@@ -2,7 +2,7 @@
 
 from abc import ABCMeta, abstractmethod
 from ..image.image import Image
-from ..image.color_format import (ColorFormat, PixelFormat, Endianness)
+from ..image.color_format import Endianness
 import numpy
 import math
 
@@ -11,7 +11,7 @@ class AbstractParser(metaclass=ABCMeta):
     """An abstract data parser"""
     @abstractmethod
     def get_displayable(self, image):
-        """Provides displayable image data (BGR formatted)
+        """Provides displayable image data (RGB formatted)
         
         Keyword arguments:
 
@@ -21,7 +21,7 @@ class AbstractParser(metaclass=ABCMeta):
         """
         pass
 
-    def parse(self, raw_data, color_format, width, height=None):
+    def parse(self, raw_data, color_format, width):
         """Parses provided raw data to an image, calculating height from provided width.
 
         Keyword arguments:
@@ -29,7 +29,6 @@ class AbstractParser(metaclass=ABCMeta):
             raw_data: bytes object
             color_format: target instance of ColorFormat
             width: target width to interpret
-            height: (deprecated) target height to interpret, default: None
 
         Returns: instance of Image processed to chosen format
         """
@@ -38,18 +37,19 @@ class AbstractParser(metaclass=ABCMeta):
         curr_dtype = None
         if max_value <= 8:
             curr_dtype = numpy.uint8
-        elif max_value <= 16:
-            curr_dtype = numpy.uint16
-        elif max_value <= 32:
-            curr_dtype = numpy.uint32
         else:
-            curr_dtype = numpy.uint64
+            curr_dtype = numpy.uint16
 
         data_array = []
         temp_set = set(color_format.bits_per_components)
 
         if (len(temp_set) == 1 or len(temp_set) == 2
                 and not temp_set.add(0)) and max_value % 8 == 0:
+            raw_data = bytearray(raw_data)
+            if len(raw_data) % numpy.dtype(curr_dtype).alignment != 0:
+                raw_data += (0).to_bytes(len(raw_data) %
+                                         numpy.dtype(curr_dtype).alignment,
+                                         byteorder="little")
             temp = numpy.frombuffer(raw_data, dtype=curr_dtype)
             data_array = temp
             if len(temp_set) == 2:
@@ -74,7 +74,6 @@ class AbstractParser(metaclass=ABCMeta):
                 (processed_data,
                  numpy.zeros((width * 4) - (processed_data.size %
                                             (width * 4)))))
-        print('costam {}'.format(processed_data.size / (width * 4)))
         return Image(raw_data, color_format, processed_data, width,
                      processed_data.size // (width * 4))
 
@@ -85,10 +84,8 @@ class AbstractParser(metaclass=ABCMeta):
 
             raw_data: bytes object
             color_format: target instance of ColorFormat
-            width: target width to interpret
-            height: target height to interpret
 
-        Returns: instance of Image processed to chosen format
+        Returns: properly parsed buffer data (list)
         """
 
         comp_bits = color_format.bits_per_components
