@@ -1,9 +1,11 @@
 import tkinter as tk
 import tkinter.font as tkFont
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfile
 
 from .canvas import CanvasImage
 from .image.color_format import AVAILABLE_FORMATS
+from .core import determine_color_format, get_displayable
+from PIL import Image
 
 
 class MainWindow(tk.Frame):
@@ -41,6 +43,17 @@ class MainWindow(tk.Frame):
             self.path_to_File = path
             self.update_image()
 
+    def file_save(self):
+        if self.canvas.img != None:
+            im = Image.fromarray(get_displayable(self.canvas.img))
+            dialog = asksaveasfile(mode='wb',
+                                   defaultextension=".png",
+                                   filetypes=(("PNG file", "*.png"),
+                                              ("All Files", "*.*")))
+            if dialog is None:
+                return
+            im.save(dialog)
+
     def update_image(self):
         if self.path_to_File is None:
             self.warning_text.set("Path to file not specified")
@@ -61,6 +74,22 @@ class MainWindow(tk.Frame):
             self.ent_height.insert(0, self.canvas.imheight)
             self.ent_height.configure(state='readonly')
             self.canvas.grid()
+
+    def show_color_info_popup(self):
+        pop = tk.Toplevel(self.master)
+        pop.title("Color format description")
+        pop.geometry("600x150")
+        color_format = determine_color_format(self.v.get())
+        custom_text= "Pixel format name:  " + color_format.name + "\nEndianness:  " \
+                        + str(color_format.endianness)[11:] + "\n Pixel format:  " + str(color_format.pixel_format)[12:]+\
+                        "\nPixel plane:  " + str(color_format.pixel_plane)[11:] + "\nBits per components:  " + str(color_format.bits_per_components)
+
+        pop_label = tk.Label(master=pop,
+                             text=custom_text,
+                             font=self.widget_font)
+        pop_label.pack(pady=20)
+        pop_frame = tk.Frame(pop)
+        pop_frame.pack(pady=5)
 
     def create_widgets(self, args):
         # Main window
@@ -105,15 +134,25 @@ class MainWindow(tk.Frame):
                                  borderwidth=0)
         opt_color_formats.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        # Color description button (UNSUPPORTED)
+        # Color description button
         btn_color_description = tk.Button(master=frm_control,
                                           width=20,
                                           height=3,
                                           text="Color format descripiton",
                                           font=self.widget_font,
                                           borderwidth=0,
-                                          state=tk.DISABLED)
+                                          command=self.show_color_info_popup)
         btn_color_description.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # Export image button
+        btn_export_image = tk.Button(master=frm_control,
+                                     width=20,
+                                     height=3,
+                                     text="Export image",
+                                     font=self.widget_font,
+                                     borderwidth=0,
+                                     command=self.file_save)
+        btn_export_image.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Resolution change entry
         frm_size = tk.Frame(master=frm_control,
