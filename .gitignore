@@ -8,3 +8,6 @@ __pycache__/
 env/
 venv/
 ENV/
+
+htmlcov/
+.vscode/
