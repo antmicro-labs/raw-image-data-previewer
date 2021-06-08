@@ -234,7 +234,9 @@ class CanvasImage:
                 image = self.__pyramid[max(0, self.__curr_img)].crop(
                     (int(x1 / self.__scale), int(y1 / self.__scale),
                      int(x2 / self.__scale), int(y2 / self.__scale)))
-            #
+            if image.mode == "RGBA":
+                mask = Image.new("RGB", image.size, (255, 255, 255))
+                image = Image.composite(image, mask, image)
             imagetk = ImageTk.PhotoImage(
                 image.resize((int(x2 - x1), int(y2 - y1)), self.__filter))
             imageid = self.canvas.create_image(max(box_canvas[0],
