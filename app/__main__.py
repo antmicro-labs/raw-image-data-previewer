@@ -45,8 +45,3 @@ else:
     img = load_image(args["FILE_PATH"], args["color_format"],
                      args["resolution"])
     save_image_as_file(get_displayable(img), args["export"])
-"""
-cv.imshow(args["FILE_PATH"], get_displayable(img))
-cv.waitKey(0)
-cv.destroyAllWindows()
-"""
