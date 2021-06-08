@@ -61,6 +61,7 @@ class MainWindow(tk.Frame):
             self.warning_text.set("Width needs be greater than 0")
             self.display_text.set(self.path_to_File.rsplit('/', 1)[-1])
         else:
+            self.display_text.set(self.path_to_File.rsplit('/', 1)[-1])
             if self.canvas is not None:
                 self.canvas.destroy()
 
