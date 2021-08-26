@@ -36,7 +36,7 @@ pip install -r requirements.txt
 ### Ubuntu 20.04
 
 ```bash
-sudo apt-get install python3-pip git
+sudo apt-get install python3-pip git python3-pil.imagetk
 git clone https://github.com/antmicro-labs/raw-image-data-previewer.git
 cd raw-image-data-previewer
 python3 -m pip install -r requirements.txt
