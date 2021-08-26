@@ -120,6 +120,13 @@ class CanvasImage:
         self.__show_image()
         self.canvas.focus_set()
 
+    def set_antialiasing(self, antialiasing):
+        if antialiasing:
+            self.__filter = Image.ANTIALIAS
+        else:
+            self.__filter = Image.NEAREST
+        self.__show_image()
+
     def smaller(self):
         """ For huge images, resize image and return a smaller version. """
         # Convert height and width into floats.

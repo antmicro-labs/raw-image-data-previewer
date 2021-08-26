@@ -68,6 +68,7 @@ class MainWindow(tk.Frame):
             self.warning_text.set("")
             self.canvas = CanvasImage(self.photoframe, self.path_to_File,
                                       self.v.get(), int(self.ent_width.get()))
+            self.canvas.set_antialiasing(self.antialiasing.get())
             self.ent_height.configure(state='normal')
             self.ent_height.delete(0, len(self.ent_height.get()))
             self.ent_width.delete(0, len(self.ent_width.get()))
@@ -91,6 +92,10 @@ class MainWindow(tk.Frame):
         pop_label.pack(pady=20)
         pop_frame = tk.Frame(pop)
         pop_frame.pack(pady=5)
+
+    def set_antialiasing(self):
+        if self.canvas:
+            self.canvas.set_antialiasing(self.antialiasing.get())
 
     def create_widgets(self, args):
         # Main window
@@ -206,6 +211,18 @@ class MainWindow(tk.Frame):
         self.ent_height.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
         self.ent_width.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
         frm_size.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # Anti-aliasing checkbox
+        self.antialiasing = tk.BooleanVar()
+        chk_antialiasing = tk.Checkbutton(master=frm_control,
+                                          width=20,
+                                          height=3,
+                                          text="Anti-aliasing",
+                                          font=self.widget_font,
+                                          borderwidth=0,
+                                          variable=self.antialiasing,
+                                          command=self.set_antialiasing)
+        chk_antialiasing.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Warning label
         self.warning_text = tk.StringVar()
