@@ -39,7 +39,7 @@ class MainWindow(tk.Frame):
 
     def open_file(self):
         path = askopenfilename(filetypes=[("All Files", "*")])
-        if path != '':
+        if path:
             self.path_to_File = path
             self.update_image()
 
@@ -57,7 +57,7 @@ class MainWindow(tk.Frame):
     def update_image(self):
         if self.path_to_File is None:
             self.warning_text.set("Path to file not specified")
-        elif int(self.ent_width.get()) <= 0:
+        elif self.var_width.get() <= 0:
             self.warning_text.set("Width needs be greater than 0")
             self.display_text.set(self.path_to_File.rsplit('/', 1)[-1])
         else:
@@ -67,14 +67,10 @@ class MainWindow(tk.Frame):
 
             self.warning_text.set("")
             self.canvas = CanvasImage(self.photoframe, self.path_to_File,
-                                      self.v.get(), int(self.ent_width.get()))
+                                      self.v.get(), self.var_width.get())
             self.canvas.set_antialiasing(self.antialiasing.get())
-            self.ent_height.configure(state='normal')
-            self.ent_height.delete(0, len(self.ent_height.get()))
-            self.ent_width.delete(0, len(self.ent_width.get()))
-            self.ent_width.insert(0, self.canvas.imwidth)
-            self.ent_height.insert(0, self.canvas.imheight)
-            self.ent_height.configure(state='readonly')
+            self.var_width.set(self.canvas.imwidth)
+            self.var_height.set(self.canvas.imheight)
             self.canvas.grid()
 
     def show_color_info_popup(self):
@@ -186,27 +182,30 @@ class MainWindow(tk.Frame):
                         padx=2,
                         pady=5)
 
-        sv = tk.StringVar()
-        self.ent_width = tk.Entry(master=frm_width,
-                                  width=10,
-                                  font=self.widget_font,
-                                  textvariable=sv)
+        if self.path_to_File is None:
+            self.var_width = tk.IntVar(value=800)
+            self.var_height = tk.IntVar(value=0)
+        else:
+            self.var_width = tk.IntVar(value=self.canvas.imwidth)
+            self.var_height = tk.IntVar(value=self.canvas.imheight)
+
+        validator = frm_width.register(lambda x: x.isdigit() or not x)
+        self.ent_width = tk.Spinbox(master=frm_width,
+                                    width=10,
+                                    font=self.widget_font,
+                                    from_=1,
+                                    to=1e6,
+                                    validate=tk.ALL,
+                                    validatecommand=(validator, '%P'),
+                                    textvariable=self.var_width)
         self.ent_width.bind('<Return>', (lambda _: self.update_image()))
 
         self.ent_height = tk.Entry(master=frm_height,
                                    width=10,
                                    font=self.widget_font,
-                                   background=self.bg_color)
-
-        if self.path_to_File != None:
-            self.ent_width.insert(0, self.canvas.imwidth)
-            self.ent_height.insert(0, self.canvas.imheight)
-            self.ent_height.configure(state='readonly')
-
-        else:
-            self.ent_width.insert(0, 0)
-            self.ent_height.insert(0, 0)
-            self.ent_height.configure(state='readonly')
+                                   background=self.bg_color,
+                                   textvariable=self.var_height)
+        self.ent_height.configure(state='readonly')
 
         self.ent_height.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
         self.ent_width.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
