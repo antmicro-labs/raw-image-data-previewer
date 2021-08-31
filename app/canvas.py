@@ -26,8 +26,6 @@ class AutoScrollbar(ttk.Scrollbar):
 class CanvasImage:
     """ Canvas that displays an image, allowing zooming and dragging. """
     def __init__(self, placeholder, path, color_format, width):
-        # How zoomed in the image is at the begginnig.
-        self.imscale = 1.0
         # How much the zoom changes based on scrolling etc.
         self.__zoom_delta = 1.3
         self.__filter = Image.ANTIALIAS
@@ -78,6 +76,16 @@ class CanvasImage:
         self.__huge_size = 14000
         # Max bandwith is set at 1024.
         self.__band_width = 1024
+        self.reset_width()
+        self.canvas.focus_set()
+
+    def set_width(self, width):
+        self.img.reshape(width)
+        self.reset_width()
+
+    def reset_width(self):
+        # How zoomed in the image is at the begginnig.
+        self.imscale = 1.0
         # Open our image.
         self.__image = Image.fromarray(get_displayable(self.img))
         # Image width and height, public for outer classes.
@@ -118,7 +126,6 @@ class CanvasImage:
         self.container = self.canvas.create_rectangle(
             (0, 0, self.imwidth, self.imheight), width=0)
         self.__show_image()
-        self.canvas.focus_set()
 
     def set_antialiasing(self, antialiasing):
         if antialiasing:
