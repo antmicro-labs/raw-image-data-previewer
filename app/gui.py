@@ -73,6 +73,14 @@ class MainWindow(tk.Frame):
             self.var_height.set(self.canvas.imheight)
             self.canvas.grid()
 
+    def update_width(self):
+        if not self.canvas:
+            self.update_image()
+            return
+        self.canvas.set_width(int(self.ent_width.get()))
+        self.var_width.set(self.canvas.imwidth)
+        self.var_height.set(self.canvas.imheight)
+
     def show_color_info_popup(self):
         pop = tk.Toplevel(self.master)
         pop.title("Color format description")
@@ -198,7 +206,7 @@ class MainWindow(tk.Frame):
                                     validate=tk.ALL,
                                     validatecommand=(validator, '%P'),
                                     textvariable=self.var_width)
-        self.ent_width.bind('<Return>', (lambda _: self.update_image()))
+        self.ent_width.bind('<Return>', (lambda _: self.update_width()))
 
         self.ent_height = tk.Entry(master=frm_height,
                                    width=10,
